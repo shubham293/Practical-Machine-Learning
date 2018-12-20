@@ -135,7 +135,8 @@ data&lt;-read.csv(&quot;C:/Learning/Machine Learning/pml-training.csv&quot;)
 #Partition the data into testing and training
 inTrain&lt;-createDataPartition(y=data$classe,p=0.8,list=FALSE)
 testing&lt;-data[-inTrain,]
-training&lt;-data[inTrain,]
+training&lt;-data[inTrain,] </code></pre>
+  
 <p> 2. Since the variables in datasets have a large range (some variables vary between -180 to +180), it was considered necessary to center scale the variables. This was done on both train and test data sets</p>
 #Scaling all the variates on both test and train data
 training2&lt;-preProcess(training[,-c(1,3,4,7,160)],method=c(&quot;center&quot;,&quot;scale&quot;))
