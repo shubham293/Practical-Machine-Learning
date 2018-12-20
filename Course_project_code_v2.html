@@ -138,28 +138,28 @@ testing&lt;-data[-inTrain,]
 training&lt;-data[inTrain,] </code></pre>
   
 <p> 2. Since the variables in datasets have a large range (some variables vary between -180 to +180), it was considered necessary to center scale the variables. This was done on both train and test data sets</p>
-#Scaling all the variates on both test and train data
+<pre class="r"><code>#Scaling all the variates on both test and train data
 training2&lt;-preProcess(training[,-c(1,3,4,7,160)],method=c(&quot;center&quot;,&quot;scale&quot;))
 training3&lt;-predict(training2, training)
-testing3&lt;-predict(training2, testing)
+testing3&lt;-predict(training2, testing)</code></pre>
 
 <p> 3. Many variables in the data are non-independent or non-useful for prediction. For example, max yaw column is actually a summarization to give the maximum value of yaw for all yaw values in the particular window (denoted by column num_window). Hence it is not an independent variable. Similarly, the first 7 columns that include username, timestamps etc. are not variables that will be used in the prediction algorithms. All these variables are removed.</p>
-#Remove non independent and other non useful columns
+<pre class="r"><code>#Remove non independent and other non useful columns
 col_index&lt;-!grepl(&quot;max|min|kurtosis|amplitude|skewness|avg|stddev|var&quot;, colnames(training3))
 training3&lt;-training3[col_index]
 testing3&lt;-testing3[col_index]
 training3&lt;-training3[,-c(1:7)]
-testing3&lt;-testing3[,-c(1:7)]
+testing3&lt;-testing3[,-c(1:7)]</code></pre>
 
 <p> 4. Now the data is trained on Random forest algorithm using 5-fold cross validation and the algorithm is tested on the test data set</p>
-#Training on Random Forest Algo using 5 fold cross validation
+<pre class="r"><code>#Training on Random Forest Algo using 5 fold cross validation
 trainControl &lt;- trainControl(method=&quot;cv&quot;, number=5, verboseIter=FALSE)
 rf&lt;-train(classe~.,method=&quot;rf&quot;, data=training3, trainControl=trainControl)
-x1&lt;-predict(rf,testing3[,-53])
+x1&lt;-predict(rf,testing3[,-53])</code></pre>
 
 <p>5. Results are analyzed using confusion matrix. 99.18% accuracy is observed </p>
-confusionMatrix(x1, testing3$classe)</code></pre>
-<pre><code>## Confusion Matrix and Statistics
+<pre class="r"><code>confusionMatrix(x1, testing3$classe)</code></pre>
+## Confusion Matrix and Statistics
 ## 
 ##           Reference
 ## Prediction    A    B    C    D    E
@@ -1746,10 +1746,11 @@ confusionMatrix(x2, testing3$classe)</code></pre>
 ## Detection Rate         0.2796   0.1787   0.1682   0.1603   0.1767
 ## Detection Prevalence   0.2875   0.1891   0.1800   0.1659   0.1774
 ## Balanced Accuracy      0.9860   0.9553   0.9754   0.9858   0.9801</code></pre>
+  
+ <p> 7. Random forest algorithm was run on the 20 test sets in the file "pml-testing.csv". All 20 predictions were correct and I was awarded 20 points in the quiz</p>
 <pre class="r"><code>#Get test set data
 testing_new&lt;-read.csv(&quot;C:/Learning/Machine Learning/pml-testing.csv&quot;)
 
-<p> 7. Random forest algorithm was run on the 20 test sets in the file "pml-testing.csv". All 20 predictions were correct and I was awarded 20 points in the quiz</p>
 #Prediciting on the test set after doing basic transformations
 testing_new2&lt;-predict(training2, testing_new)
 col_index&lt;-!grepl(&quot;max|min|kurtosis|amplitude|skewness|avg|stddev|var&quot;, colnames(testing_new2))
